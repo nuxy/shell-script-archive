@@ -1,9 +1,13 @@
 #!/bin/sh
 #
 #  oom-killer.sh
-#  Copyright (C) 2004-2013 Marc S. Brooks. All rights reserved.
+#  Create an OOM killer exception for a select process
 #
-#   NOTES
+#  Copyright 2004-2013, Marc S. Brooks (http://mbrooks.info)
+#  Licensed under the MIT license:
+#  http://www.opensource.org/licenses/mit-license.php
+#
+#  Notes:
 #   - This script has been tested to work with Linux
 #   - This script must be run as root
 #   - This script can be run via cronjob
