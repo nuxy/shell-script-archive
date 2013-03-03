@@ -8,7 +8,7 @@
 #  http://www.opensource.org/licenses/mit-license.php
 #
 #  Dependencies:
-#    ec2-metadata
+#    curl
 #
 #  Notes:
 #   - This script has been tested to work with RHEL & CentOS
@@ -24,10 +24,11 @@
 OUTFILE=/root/.install
 
 if [ ! -f $OUTFILE ]; then
-    /usr/local/bin/ec2-metadata --user-data > $OUTFILE
+    resp=`curl -s http://169.254.169.254/latest/user-data`
 
-    if [ ! "$(grep 'user-data: not available' $OUTFILE)" ]; then
-        /bin/sh $OUTFILE
+    if [ "$resp" != "" ]; then
+        echo "$resp" > $OUTFILE
+        /bin/sh $OUTFILE >& /dev/null
 
        RESULT=/bin/true
     else
