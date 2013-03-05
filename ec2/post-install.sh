@@ -24,15 +24,17 @@
 OUTFILE=/root/.install
 
 if [ ! -f $OUTFILE ]; then
-    resp=`curl -s http://169.254.169.254/latest/user-data`
+    USERDATA=`curl -s http://169.254.169.254/latest/user-data`
 
-    if [ "$resp" != "" ]; then
-        echo "$resp" > $OUTFILE
-        /bin/sh $OUTFILE >& /dev/null
+    if [ "$USERDATA" != "" ]; then
+        echo "$USERDATA" > $OUTFILE
+        chmod 755 $OUTFILE
+        exec $OUTFILE >> /var/log/post-install.log >& /dev/null
+        chmod 644 $OUTFILE
 
-       RESULT=/bin/true
+        RESULT=/bin/true
     else
-       RESULT=/bin/false
+        RESULT=/bin/false
     fi
 
     action "Configure and launch services:" $RESULT
