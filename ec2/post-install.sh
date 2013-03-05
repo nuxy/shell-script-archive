@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  post-install.sh
+#  post-install.sh (updated: 3/5/2012)
 #  Configure and launch non-ephemeral services from a user-data script
 #
 #  Copyright 2009-2013, Marc S. Brooks (http://mbrooks.info)
@@ -26,10 +26,10 @@ OUTFILE=/root/.install
 if [ ! -f $OUTFILE ]; then
     USERDATA=`curl -s http://169.254.169.254/latest/user-data`
 
-    if [ "$USERDATA" != "" ]; then
+    if [ ! "$(echo $USERDATA | grep 404)" ]; then
         echo "$USERDATA" > $OUTFILE
         chmod 755 $OUTFILE
-        exec $OUTFILE >> /var/log/post-install.log >& /dev/null
+        exec $OUTFILE 2>&1 | tee -a /var/log/post-install.log
         chmod 644 $OUTFILE
 
         RESULT=/bin/true
