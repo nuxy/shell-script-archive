@@ -24,9 +24,8 @@
 . /etc/init.d/functions
 
 COMMUNITY=private
-HOSTNAME=`hostname`
-HOST=$HOSTNAME
-ALIAS=`echo $HOSTNAME | cut -d'.' -f1`
+REMOTE_HOST=mail.domain.com
+DOMAIN=`hostname`
 SCRIPT=`basename $0`
 LOCK=/var/lock/subsys/$SCRIPT
 
@@ -38,7 +37,7 @@ start() {
     STDOUT="Adding domain to Sendmail host:"
 
     if [ ! -e $LOCK ]; then
-        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $HOST "" SNMPv2-MIB::snmpTrap.2.0 SNMPv2-MIB::sysLocation.0 s $DOMAIN
+        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.0 SNMPv2-MIB::sysLocation.0 s $DOMAIN
 
         if [ $? -eq 0 ]; then
             touch $LOCK
@@ -55,7 +54,7 @@ stop() {
     STDOUT="Removing domain from Sendmail host:"
 
     if [ -e $LOCK ]; then
-        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $HOST "" SNMPv2-MIB::snmpTrap.2.1 SNMPv2-MIB::sysLocation.0 s $DOMAIN
+        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.1 SNMPv2-MIB::sysLocation.0 s $DOMAIN
 
         if [ $? -eq 0 ]; then
             rm -f $LOCK

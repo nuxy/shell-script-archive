@@ -24,7 +24,7 @@
 
 COMMUNITY=private
 HOSTNAME=`hostname`
-HOST=$HOSTNAME
+REMOTE_HOST=ns.domain.com
 ALIAS=`echo $HOSTNAME | cut -d'.' -f1`
 SCRIPT=`basename $0`
 LOCK=/var/lock/subsys/$SCRIPT
@@ -37,7 +37,7 @@ start() {
     STDOUT="Adding record to remote DNS host:"
 
     if [ ! -e $LOCK ]; then
-        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS
+        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS
 
         if [ $? -eq 0 ]; then
             touch $LOCK
@@ -54,7 +54,7 @@ stop() {
     STDOUT="Removing record from the remote DNS host:"
 
     if [ -e $LOCK ]; then
-        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS
+        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS
 
         if [ $? -eq 0 ]; then
             rm -f $LOCK
