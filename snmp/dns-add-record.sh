@@ -38,7 +38,7 @@ done
 EXISTS=`cat $FWD_ZONE | grep -P "^$NAME\t"`
 
 if [ "$EXISTS" = "" ]; then
-    FWD_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:\w\+\?/\1/g'`
+    FWD_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
     set ${FWD_ADDR//./ }
     REV_ADDR="$4.$3.$2";
 

@@ -37,7 +37,7 @@ done
 EXISTS=`cat $MAIL_DIR/domaintable | grep -P "^$NAME\t"`
 
 if [ "$EXISTS" = "" ]; then
-    IP_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:\w\+\?/\1/g'`
+    IP_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
 
     echo -e "$IP_ADDR\t\t\tRELAY"   >> $MAIL_DIR/access
     echo -e "$NAME\t\t\t$MAIL_HOST" >> $MAIL_DIR/domaintable
