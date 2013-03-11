@@ -65,20 +65,16 @@ while [ "$#" != 0 ]; do
 
         -r) if [ $# -gt 1 ]; then
                 hostname=$2
-            else
-                hostname=localhost
-            fi
                 good=1
                 shift
+            fi
                 ;;
 
         -e) if [ $# -gt 1 ]; then
                 expire=$2
-            else
-                expire=365
-            fi
                 good=1
                 shift
+            fi
                 ;;
 
          *) good=0
@@ -99,10 +95,18 @@ Options:
   -o output directory  : specify the path to the output directory
   -r remote host       : specify the hostname of a remote database
   -e expire days       : specify number of days to keep backup files (default: 365)
-
 EOT
+
 else
-    output="${outdir}/$timestamp.sql.gz"
+    if [ -z "${hostname}" ]; then
+        hostname=localhost
+    fi
+
+    if [ -z "${expire}" ]; then
+        expire=365
+    fi
+
+    output="${outdir}/$TIMESTAMP.sql.gz"
 
     mysqldump -q -e -h${hostname} -u${username} -p${password} ${database} | gzip - > $output
 
