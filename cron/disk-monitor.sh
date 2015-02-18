@@ -50,7 +50,7 @@ done
 if [ $good = 0 ]; then
 cat <<EOT
 
-Usage: disk-monitor.sh [-h hostname] [-l limit] [-e email]
+Usage: disk-monitor.sh [-h hostname] [-q quota] [-e email]
 
 Options:
   -h hostname  : specify the server hostname (default: hostname)
