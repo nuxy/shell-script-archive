@@ -3,7 +3,7 @@
 #  dns-del-record.sh
 #  Remove an 'A' record from the DNS zone file in Bind using SNMP
 #
-#  Copyright 2010-2013, Marc S. Brooks (http://domain.com)
+#  Copyright 2010-2013, Marc S. Brooks (http://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #

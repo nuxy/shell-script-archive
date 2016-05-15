@@ -3,7 +3,7 @@
 #  smtp-del-domain.sh
 #  Remove a domain from the Sendmail access/domain database using SNMP
 #
-#  Copyright 2010-2013, Marc S. Brooks (http://domain.com)
+#  Copyright 2010-2013, Marc S. Brooks (http://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
