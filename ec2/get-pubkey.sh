@@ -22,7 +22,7 @@
 
 . /etc/init.d/functions
 
-OUTFILE=/path/to/user/.ssh/authorized_keys
+OUTFILE=~/.ssh/authorized_keys
 
 if [ -f $OUTFILE ]; then
     action $"Public key installed:" `/usr/local/bin/ec2-metadata -u | tail -1 > $OUTFILE`
