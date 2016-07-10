@@ -23,7 +23,7 @@ OUTFILE=/root/.hostname
 if [ -f $OUTFILE ]; then
     HOST=`cat $OUTFILE`
 else
-    HOST=`curl http://169.254.169.254/latest/meta-data/hostname`
+    HOST=`curl --silent http://169.254.169.254/latest/meta-data/hostname`
 
     echo $HOST > $OUTFILE
 fi

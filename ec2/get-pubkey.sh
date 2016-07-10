@@ -19,7 +19,7 @@
 
 . /etc/init.d/functions
 
-PUBLIC_KEY=`curl http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
+PUBLIC_KEY=`curl --silent http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
 
 if [ -e "$PUBLIC_KEY" ]; then
     OUTFILE=~/.ssh/authorized_keys
