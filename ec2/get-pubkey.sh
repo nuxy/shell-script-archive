@@ -21,10 +21,12 @@
 
 OUTFILE=~/.ssh/authorized_keys
 
-if [ -f $OUTFILE ]; then
-    action $"Public key installed:" `curl http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key > $OUTFILE`
-else
-    exit 1
+if [ ! -f $OUTFILE ]; then
+    touch $OUTFILE
 fi
+
+PUBLIC_KEY=`curl http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
+
+action $"Public key installed:" echo $PUBLIC_KEY > $OUTFILE
 
 exit 0
