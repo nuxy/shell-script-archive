@@ -11,7 +11,7 @@
 #   - This script has been tested to work with RHEL & CentOS
 #   - This script must be run as root
 #   - This script can be installed in /etc/init.d or run from the command-line
-#   - The authorized_keys outfile requires local user permissions
+#   - SSH authorized_keys file requires local user permissions
 #
 #  chkconfig: 3 97 97
 #  description: Account update script
@@ -19,14 +19,16 @@
 
 . /etc/init.d/functions
 
-OUTFILE=~/.ssh/authorized_keys
-
-if [ ! -f $OUTFILE ]; then
-    touch $OUTFILE
-fi
-
 PUBLIC_KEY=`curl http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
 
-action $"Public key installed:" echo $PUBLIC_KEY > $OUTFILE
+if [ -e "$PUBLIC_KEY" ]; then
+    OUTFILE=~/.ssh/authorized_keys
+
+    if [ ! -f $OUTFILE ]; then
+        touch $OUTFILE
+    fi
+
+    action $"Public key installed:" `echo $PUBLIC_KEY > $OUTFILE`
+fi
 
 exit 0
