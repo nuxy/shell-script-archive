@@ -7,9 +7,6 @@
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
-#  Dependencies:
-#    ec2-metadata
-#
 #  Notes:
 #   - This script has been tested to work with RHEL & CentOS
 #   - This script must be run as root
@@ -26,7 +23,7 @@ OUTFILE=/root/.hostname
 if [ -f $OUTFILE ]; then
     HOST=`cat $OUTFILE`
 else
-    HOST=`/usr/local/bin/ec2-metadata --public-hostname | awk '{ print $2 }'`
+    HOST=`curl http://169.254.169.254/latest/meta-data/hostname`
 
     echo $HOST > $OUTFILE
 fi
