@@ -21,7 +21,7 @@
 
 PUBLIC_KEY=`curl --silent http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
 
-if [ -e "$PUBLIC_KEY" ]; then
+if [ -n "$PUBLIC_KEY" ]; then
     OUTFILE=/root/.ssh/authorized_keys
 
     if [ ! -f $OUTFILE ]; then
