@@ -1,7 +1,0 @@
-= linux-sh-archive
-
-Linux multi-purpose shell script archive.
-
-== Author
-
-{Marc S. Brooks}[https://github.com/nuxy]
