@@ -1,6 +1,6 @@
-Multi-purpose shell script archive for Linux based systems
+Multi-purpose shell script archive for Linux based systems.
 
-Copyright 2013, Marc S. Brooks (http://mbrooks.info)
+Copyright 2013-2016, Marc S. Brooks (https://mbrooks.info)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
