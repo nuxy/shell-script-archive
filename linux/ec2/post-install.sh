@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  post-install.sh (updated: 3/5/2012)
+#  post-install.sh
 #  Configure and launch non-ephemeral services from a user-data script
 #
 #  Copyright 2009-2013, Marc S. Brooks (http://mbrooks.info)
