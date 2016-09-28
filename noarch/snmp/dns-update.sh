@@ -9,18 +9,27 @@
 #
 #  Dependencies:
 #    snmp
+#    snmptrap
 #    bind (on remote host)
 #
 #  Notes:
 #   - This script has been tested to work with Unix-like operating systems
 #   - This script must be run as root
-#   - This script can be installed in /etc/init.d or run from the command-line
-#
-#  chkconfig: 2345 98 20
-#  description: Remote DNS zone update script
+#   - This script can be installed in /etc/rc.d or run from the command-line
 #
 
-. /etc/init.d/functions
+# PROVIDE: dns_update
+# REQUIRE: DAEMON netif
+# KEYWORD: nojail
+
+. /etc/rc.subr
+
+name="dns_update"
+rcvar=${name}_enable
+# dns_update is set by rc.conf
+ 
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
 
 COMMUNITY=private
 HOSTNAME=`hostname`
@@ -29,55 +38,50 @@ ALIAS=`echo $HOSTNAME | cut -d'.' -f1`
 SCRIPT=`basename $0`
 LOCK=/var/lock/subsys/$SCRIPT
 
-if [ ! -x /usr/bin/snmptrap ]; then
+if [ ! -x /usr/local/bin/snmptrap ]; then
     exit 1
 fi
 
-start() {
+dns_update_start() {
     STDOUT="Adding record to remote DNS host:"
 
     if [ ! -e $LOCK ]; then
-        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS
+        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS`
+
+        if [ -z "$success" ]; then
+            echo -n "$STDOUT success"
+        else
+            echo -n "$STDOUT failed"
+            exit 1
+        fi
 
         if [ $? -eq 0 ]; then
             touch $LOCK
         fi
-    else
-        echo -n $"$STDOUT"
-        failure
-        echo
-        return 1
     fi
 }
 
-stop() {
+dns_update_stop() {
     STDOUT="Removing record from the remote DNS host:"
 
     if [ -e $LOCK ]; then
-        action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS
+        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS`
+
+        if [ -z "$success" ]; then
+            echo -n "$STDOUT success"
+        else
+            echo -n "$STDOUT failed"
+            exit 1
+        fi
 
         if [ $? -eq 0 ]; then
             rm -f $LOCK
         fi
     else
-        echo -n $"$STDOUT"
-        failure
-        echo
-        return 1
+        echo -n "$STDOUT failed"
+        exit 1
     fi
 }
 
-case "$1" in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-    *)
-
-    echo $"Usage: $SCRIPT {start|stop}"
-    exit 1
-esac
-
-exit 0
+load_rc_config $name
+run_rc_command "$1"
