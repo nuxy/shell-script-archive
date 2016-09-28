@@ -1,6 +1,14 @@
 # Shell Script Archive
 
+Scripts I have written over the past decade to solve common administration tasks.
+
 Please see the script _Notes_ for supported operating systems.
+
+## Issues
+
+For feedback, bug reports, or other comments, please create a [ticket](https://github.com/nuxy/shell-script-archive/issues).
+
+If you find an issue that you want to address yourself — _Fork the repository_ and send your changes as a _Pull request_.
 
 ## License and Warranty
 
