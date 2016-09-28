@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 #  mysql-backup.sh
-#  Backup a database to a compressed, time stamped file
+#  Backup a MySQL database and create a time stamped archive.
 #
-#  Copyright 2002-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2002-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
@@ -11,7 +11,7 @@
 #    mysqldump
 #
 #  Notes:
-#   - This script has been tested to work with Linux
+#   - This script has been tested to work with Unix-like operating systems
 #   - This script must be run as root
 #   - This script can be run via cronjob
 #

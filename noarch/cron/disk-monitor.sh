@@ -1,14 +1,14 @@
 #!/bin/sh
 #
 #  disk-monitor.sh
-#  Monitor disk partition usage using e-mail alerts
+#  Monitor disk partition usage and send e-mail when defined threshold is met.
 #
-#  Copyright 2001-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2001-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
 #  Notes:
-#   - This script has been tested to work with Linux
+#   - This script has been tested to work with Unix-like operating systems
 #   - This script must be run as root
 #   - This script can be run via cronjob
 #

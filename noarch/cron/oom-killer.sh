@@ -1,14 +1,18 @@
 #!/bin/sh
 #
 #  oom-killer.sh
-#  Create an OOM killer exception for a select process
+#  Create a OOM (out of memory) exception handler for a selected process.
 #
-#  Copyright 2004-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2004-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
+#  Dependencies:
+#    pidof
+#
 #  Notes:
-#   - This script has been tested to work with Linux
+#   - This script has been tested to work with Unix-like operating systems
+#   - This script cannot be run in a virtualized environment
 #   - This script must be run as root
 #   - This script can be run via cronjob
 #

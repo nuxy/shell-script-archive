@@ -3,7 +3,7 @@
 #  smtp-add-domain.sh
 #  Add a new domain to the Sendmail access/domain database using SNMP
 #
-#  Copyright 2010-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2010-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
@@ -14,7 +14,7 @@
 #    sendmail-cf
 #
 #  Notes:
-#   - This script has been tested to work with RHEL & CentOS 5.5
+#   - This script has been tested to work with Unix-like operating systems
 #   - Requires a properly configured snmpd.conf and snmptrapd.conf
 #   - This script must be executed via an SNMP trap
 #

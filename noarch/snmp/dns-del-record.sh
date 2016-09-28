@@ -3,7 +3,7 @@
 #  dns-del-record.sh
 #  Remove an 'A' record from the DNS zone file in Bind using SNMP
 #
-#  Copyright 2010-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2010-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
@@ -13,7 +13,7 @@
 #    snmptrapd
 #
 #  Notes:
-#   - This script has been tested to work with RHEL & CentOS 5.5
+#   - This script has been tested to work with Unix-like operating systems
 #   - Requires a reverse zone record (10.in-addr.arpa)
 #   - Requires a properly configured snmpd.conf and snmptrapd.conf
 #   - This script must be executed via an SNMP trap
