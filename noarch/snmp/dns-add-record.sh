@@ -22,8 +22,8 @@
 #   snmptrap -v 2c -c public localhost "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s "alias"
 #
 
-FWD_ZONE=/var/named/chroot/var/named/data/forward/domain.com.zone.db
-REV_ZONE=/var/named/chroot/var/named/data/reverse/10.in-addr.arpa.zone.db
+FWD_ZONE=/var/named/forward/domain.com.zone.db
+REV_ZONE=/var/named/reverse/10.in-addr.arpa.zone.db
 ZONE_NAME=domain.com
 
 read host
@@ -42,7 +42,7 @@ if [ "$exists" = "" ]; then
     set ${FWD_ADDR//./ }
     REV_ADDR="$4.$3.$2";
 
-    echo -e "$record\t\tA\t$FWD_ADDR" >> $FWD_ZONE
+    echo -e "$record\t\tA\t$FWD_ADDR"               >> $FWD_ZONE
     echo -e "$REV_ADDR\t\tPTR\t$record.$ZONE_NAME." >> $REV_ZONE
 
     rndc reload $ZONE_NAME
