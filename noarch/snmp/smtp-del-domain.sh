@@ -30,17 +30,17 @@ read ip
 
 while read oid val; do
     if [ "$val" != "" ]; then
-        NAME="$val"
+        record="$val"
     fi
 done
 
-EXISTS=`cat $MAIL_DIR/domaintable | grep -P "^$NAME\t"`
+exists=`cat $MAIL_DIR/domaintable | grep -P "^$record\t"`
 
-if [ "$EXISTS" != "" ]; then
-    IP_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
+if [ "$exists" != "" ]; then
+    ip_addr=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
 
-    sed "/^$IP_ADDR\t/d" $MAIL_DIR/access   > $MAIL_DIR/access\.bak
-    sed "/^$NAME\t/d" $MAIL_DIR/domaintable > $MAIL_DIR/domaintable\.bak
+    sed "/^$ip_addr\t/d" $MAIL_DIR/access      > $MAIL_DIR/access\.bak
+    sed "/^$record\t/d"  $MAIL_DIR/domaintable > $MAIL_DIR/domaintable\.bak
 
     mv $MAIL_DIR/access\.bak      $MAIL_DIR/access
     mv $MAIL_DIR/domaintable\.bak $MAIL_DIR/domaintable
@@ -50,7 +50,7 @@ if [ "$EXISTS" != "" ]; then
 
     service sendmail restart
 
-    logger "Removed domain '$NAME' from the Sendmail database"
+    logger "Removed domain '$record' from the Sendmail database"
 fi
 
 exit 0

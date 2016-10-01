@@ -30,24 +30,24 @@ read ip
 
 while read oid val; do
     if [ "$val" != "" ]; then
-        NAME="$val"
+        record="$val"
     fi
 done
 
-EXISTS=`cat $MAIL_DIR/domaintable | grep -P "^$NAME\t"`
+exists=`cat $MAIL_DIR/domaintable | grep -P "^$record\t"`
 
-if [ "$EXISTS" = "" ]; then
-    IP_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
+if [ "$exists" = "" ]; then
+    ip_addr=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
 
-    echo -e "$IP_ADDR\t\t\tRELAY"   >> $MAIL_DIR/access
-    echo -e "$NAME\t\t\t$MAIL_HOST" >> $MAIL_DIR/domaintable
+    echo -e "$ip_addr\t\t\tRELAY"     >> $MAIL_DIR/access
+    echo -e "$record\t\t\t$MAIL_HOST" >> $MAIL_DIR/domaintable
 
     makemap hash $MAIL_DIR/access      < $MAIL_DIR/access
     makemap hash $MAIL_DIR/domaintable < $MAIL_DIR/domaintable
 
     service sendmail restart
 
-    logger "Added new domain '$NAME' to the Sendmail database"
+    logger "Added new domain '$record' to the Sendmail database"
 fi
 
 exit 0
