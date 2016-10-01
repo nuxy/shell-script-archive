@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 #  post-install.sh
-#  Configure and launch non-ephemeral services from a user-data script
+#  Configure and launch non-ephemeral services from a user-data script.
 #
-#  Copyright 2009-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2009-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
@@ -22,22 +22,23 @@
 . /etc/init.d/functions
 
 OUTFILE=/root/.install
+LOGFILE=/var/log/post-install.log
 
 if [ ! -f $OUTFILE ]; then
-    USERDATA=`curl -s http://169.254.169.254/latest/user-data`
+    user_data=`curl -s http://169.254.169.254/latest/user-data`
 
-    if [ ! "$(echo $USERDATA | grep 404)" ]; then
-        echo "$USERDATA" > $OUTFILE
+    if [ ! "$(echo $user_data | grep 404)" ]; then
+        echo "$user_data" > $OUTFILE
         chmod 755 $OUTFILE
-        exec $OUTFILE 2>&1 | tee -a /var/log/post-install.log
+        exec $OUTFILE 2>&1 | tee -a $LOGFILE
         chmod 644 $OUTFILE
 
-        RESULT=/bin/true
+        result=/bin/true
     else
-        RESULT=/bin/false
+        result=/bin/false
     fi
 
-    action "Configure and launch services:" $RESULT
+    action "Configure and launch services:" $result
 fi
 
 exit 0

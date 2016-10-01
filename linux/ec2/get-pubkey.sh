@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 #  get-pubkey.sh
-#  Install the public key for the root user
+#  Install the EC2 configured SSH public key for a given user.
 #
-#  Copyright 2008-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2008-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
@@ -19,16 +19,26 @@
 
 . /etc/init.d/functions
 
-PUBLIC_KEY=`curl --silent http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
+HOME_DIR=/root
 
-if [ -n "$PUBLIC_KEY" ]; then
-    OUTFILE=/root/.ssh/authorized_keys
+public_key=`curl --silent http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
 
-    if [ ! -f $OUTFILE ]; then
-        touch $OUTFILE
+if [ -n "$public_key" ]; then
+    sshdir=$HOME_DIR/.ssh
+
+    if [ ! -d $sshdir ]; then
+        mkdir $sshdir
+        chmod 700 $sshdir
     fi
 
-    action $"Public key installed:" `echo $PUBLIC_KEY > $OUTFILE`
+    keyfile=$sshdir/authorized_keys
+
+    if [ ! -f $keyfile ]; then
+        touch $keyfile
+        chmod 600 $keyfile
+    fi
+
+    action $"Public key installed:" `echo $public_key > $keyfile`
 fi
 
 exit 0

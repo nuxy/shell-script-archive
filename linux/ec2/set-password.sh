@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 #  set-password.sh
-#  Generate new root password and output result to console
+#  Generate new root password and output result to console.
 #
-#  Copyright 2006-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2006-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
@@ -24,9 +24,9 @@
 LOCKFILE=/root/.password
 
 if [ ! -f $LOCKFILE ]; then
-    PASSWORD=`/usr/bin/mkpasswd -l 15 -s 0`
+    password=`/usr/bin/mkpasswd -l 15 -s 0`
 
-    action $"Password reset to: $PASSWORD" `echo $PASSWORD | passwd --stdin root >& /dev/null`
+    action $"Password reset to: $PASSWORD" `echo $password | passwd --stdin root >& /dev/null`
 
     touch $LOCKFILE
 fi

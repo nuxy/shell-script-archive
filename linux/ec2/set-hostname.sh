@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 #  set-hostname.sh
-#  Set the instance name to the public hostname
+#  Set the instance name to the EC2 defined public hostname.
 #
-#  Copyright 2009-2013, Marc S. Brooks (http://mbrooks.info)
+#  Copyright 2009-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
@@ -21,13 +21,13 @@
 OUTFILE=/root/.hostname
 
 if [ -f $OUTFILE ]; then
-    HOST=`cat $OUTFILE`
+    host_name=`cat $OUTFILE`
 else
-    HOST=`curl --silent http://169.254.169.254/latest/meta-data/hostname`
+    host_name=`curl --silent http://169.254.169.254/latest/meta-data/hostname`
 
-    echo $HOST > $OUTFILE
+    echo $host_name > $OUTFILE
 fi
 
-action $"Hostname updated:" hostname $HOST
+action $"Hostname updated:" hostname $host_name
 
 exit 0
