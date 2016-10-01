@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-#  dns-update.sh
-#  Update a remote DNS zone record using SNMP
+#  smtp-update.sh
+#  Update a remote Sendmail access/domain database using SNMP
 #
 #  Copyright 2010-2016, Marc S. Brooks (https://mbrooks.info)
 #  Licensed under the MIT license:
@@ -10,12 +10,12 @@
 #  Dependencies:
 #    snmp
 #    snmptrap
-#    bind (on remote host)
+#    sendmail (on remote host)
 #
 #  Notes:
-#   - This script has been tested to work with Unix-like operating systems
+#   - This script has been tested to work with FreeBSD & OpenBSD
 #   - This script must be run as root
-#   - This script can be installed in /etc/rc.d or run from the command-line
+#   - This script can be installed in /etc/init.d or run from the command-line
 #
 
 # PROVIDE: dns_update
@@ -24,17 +24,16 @@
 
 . /etc/rc.subr
 
-name="dns_update"
+name="smtp_update"
 rcvar=${name}_enable
-# dns_update is set by rc.conf
- 
+# smtp_update is set by rc.conf
+
 start_cmd="${name}_start"
 stop_cmd="${name}_stop"
 
 COMMUNITY=private
-HOSTNAME=`hostname`
-REMOTE_HOST=ns.domain.com
-ALIAS=`echo $HOSTNAME | cut -d'.' -f1`
+REMOTE_HOST=mail.domain.com
+DOMAIN=`hostname`
 SCRIPT=`basename $0`
 LOCK=/var/lock/subsys/$SCRIPT
 
@@ -42,11 +41,11 @@ if [ ! -x /usr/local/bin/snmptrap ]; then
     exit 1
 fi
 
-dns_update_start() {
-    STDOUT="Adding record to remote DNS host:"
+smtp_update_start() {
+    STDOUT="Adding domain to Sendmail host:"
 
     if [ ! -e $LOCK ]; then
-        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS`
+        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.0 SNMPv2-MIB::sysLocation.0 s $DOMAIN`
 
         if [ -z "$success" ]; then
             echo -n "$STDOUT success"
@@ -61,11 +60,11 @@ dns_update_start() {
     fi
 }
 
-dns_update_stop() {
-    STDOUT="Removing record from the remote DNS host:"
+smtp_update_stop() {
+    STDOUT="Removing domain from Sendmail host:"
 
     if [ -e $LOCK ]; then
-        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS`
+        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.1 SNMPv2-MIB::sysLocation.0 s $DOMAIN`
 
         if [ -z "$success" ]; then
             echo -n "$STDOUT success"
@@ -77,9 +76,6 @@ dns_update_stop() {
         if [ $? -eq 0 ]; then
             rm -f $LOCK
         fi
-    else
-        echo -n "$STDOUT failed"
-        exit 1
     fi
 }
 
