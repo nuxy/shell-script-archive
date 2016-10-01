@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #  dns-del-record.sh
 #  Remove an 'A' record from the DNS zone file in Bind using SNMP
@@ -31,18 +31,18 @@ read ip
 
 while read oid val; do
     if [ "$val" != "" ]; then
-        NAME=$val
+        record=$val
     fi
 done
 
-EXISTS=`cat $FWD_ZONE | grep -P "^$NAME\t"`
+exists=`cat $FWD_ZONE | grep -P "^$record\t"`
 
-if [ "$EXISTS" != "" ]; then
+if [ "$exists" != "" ]; then
     FWD_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
     set ${FWD_ADDR//./ }
     REV_ADDR="$4.$3.$2";
 
-    sed "/^$NAME\t/d"     $FWD_ZONE > $FWD_ZONE\.bak
+    sed "/^$record\t/d"     $FWD_ZONE > $FWD_ZONE\.bak
     sed "/^$REV_ADDR\t/d" $REV_ZONE > $REV_ZONE\.bak
 
     mv $FWD_ZONE\.bak $FWD_ZONE
@@ -51,7 +51,7 @@ if [ "$EXISTS" != "" ]; then
     rndc reload $ZONE_NAME
     rndc reload 10.in-addr.arpa
 
-    logger "Removed record '$NAME' from the DNS zone file"
+    logger "Removed record '$record' from the DNS zone file"
 fi
 
 exit 0

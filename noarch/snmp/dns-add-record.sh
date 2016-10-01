@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #  dns-add-record.sh
 #  Add a new 'A' record to the DNS zone file in Bind using SNMP
@@ -31,24 +31,24 @@ read ip
 
 while read oid val; do
     if [ "$val" != "" ]; then
-        NAME=$val
+        record=$val
     fi
 done
 
-EXISTS=`cat $FWD_ZONE | grep -P "^$NAME\t"`
+exists=`cat $FWD_ZONE | grep -P "^$record\t"`
 
-if [ "$EXISTS" = "" ]; then
+if [ "$exists" = "" ]; then
     FWD_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
     set ${FWD_ADDR//./ }
     REV_ADDR="$4.$3.$2";
 
-    echo -e "$NAME\t\tA\t$FWD_ADDR" >> $FWD_ZONE
-    echo -e "$REV_ADDR\t\tPTR\t$NAME.$ZONE_NAME." >> $REV_ZONE
+    echo -e "$record\t\tA\t$FWD_ADDR" >> $FWD_ZONE
+    echo -e "$REV_ADDR\t\tPTR\t$record.$ZONE_NAME." >> $REV_ZONE
 
     rndc reload $ZONE_NAME
     rndc reload 10.in-addr.arpa
 
-    logger "Added new record '$NAME' to DNS zone file"
+    logger "Added new record '$record' to DNS zone file"
 fi
 
 exit 0
