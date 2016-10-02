@@ -10,7 +10,7 @@
 #  Notes:
 #   - This script has been tested to work with FreeBSD & OpenBSD
 #   - This script must be run as root
-#   - This script can be installed in /etc/init.d or run from the command-line
+#   - This script can be installed in /etc/rc.d or run from the command-line
 #
 
 # PROVIDE: set_hostname
