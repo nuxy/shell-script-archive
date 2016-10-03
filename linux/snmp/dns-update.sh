@@ -27,7 +27,7 @@ HOSTNAME=`hostname`
 REMOTE_HOST=ns.domain.com
 ALIAS=`echo $HOSTNAME | cut -d'.' -f1`
 SCRIPT=`basename $0`
-LOCK=/var/lock/subsys/$SCRIPT
+LOCKFILE=/var/lock/subsys/$SCRIPT
 
 if [ ! -x /usr/bin/snmptrap ]; then
     exit 1
@@ -36,11 +36,11 @@ fi
 start() {
     STDOUT="Adding record to remote DNS host:"
 
-    if [ ! -e $LOCK ]; then
+    if [ ! -e $LOCKFILE ]; then
         action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS
 
         if [ $? -eq 0 ]; then
-            touch $LOCK
+            touch $LOCKFILE
         fi
     else
         echo -n $"$STDOUT"
@@ -53,11 +53,11 @@ start() {
 stop() {
     STDOUT="Removing record from the remote DNS host:"
 
-    if [ -e $LOCK ]; then
+    if [ -e $LOCKFILE ]; then
         action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS
 
         if [ $? -eq 0 ]; then
-            rm -f $LOCK
+            rm -f $LOCKFILE
         fi
     else
         echo -n $"$STDOUT"

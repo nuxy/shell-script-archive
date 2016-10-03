@@ -35,7 +35,7 @@ COMMUNITY=private
 REMOTE_HOST=mail.domain.com
 DOMAIN=`hostname`
 SCRIPT=`basename $0`
-LOCK=/var/lock/subsys/$SCRIPT
+LOCKFILE=/var/lock/subsys/$SCRIPT
 
 if [ ! -x /usr/local/bin/snmptrap ]; then
     exit 1
@@ -44,18 +44,18 @@ fi
 smtp_update_start() {
     STDOUT="Adding domain to Sendmail host:"
 
-    if [ ! -e $LOCK ]; then
+    if [ ! -e $LOCKFILE ]; then
         success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.0 SNMPv2-MIB::sysLocation.0 s $DOMAIN`
 
         if [ -z "$success" ]; then
-            echo -n "$STDOUT success"
+            echo "$STDOUT success"
         else
-            echo -n "$STDOUT failed"
+            echo "$STDOUT failed"
             exit 1
         fi
 
         if [ $? -eq 0 ]; then
-            touch $LOCK
+            touch $LOCKFILE
         fi
     fi
 }
@@ -63,18 +63,18 @@ smtp_update_start() {
 smtp_update_stop() {
     STDOUT="Removing domain from Sendmail host:"
 
-    if [ -e $LOCK ]; then
+    if [ -e $LOCKFILE ]; then
         success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.1 SNMPv2-MIB::sysLocation.0 s $DOMAIN`
 
         if [ -z "$success" ]; then
-            echo -n "$STDOUT success"
+            echo "$STDOUT success"
         else
-            echo -n "$STDOUT failed"
+            echo "$STDOUT failed"
             exit 1
         fi
 
         if [ $? -eq 0 ]; then
-            rm -f $LOCK
+            rm -f $LOCKFILE
         fi
     fi
 }

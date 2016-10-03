@@ -27,7 +27,7 @@ COMMUNITY=private
 REMOTE_HOST=mail.domain.com
 DOMAIN=`hostname`
 SCRIPT=`basename $0`
-LOCK=/var/lock/subsys/$SCRIPT
+LOCKFILE=/var/lock/subsys/$SCRIPT
 
 if [ ! -x /usr/bin/snmptrap ]; then
     exit 1
@@ -36,11 +36,11 @@ fi
 start() {
     STDOUT="Adding domain to Sendmail host:"
 
-    if [ ! -e $LOCK ]; then
+    if [ ! -e $LOCKFILE ]; then
         action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.0 SNMPv2-MIB::sysLocation.0 s $DOMAIN
 
         if [ $? -eq 0 ]; then
-            touch $LOCK
+            touch $LOCKFILE
         fi
     else
         echo -n $"$STDOUT"
@@ -53,11 +53,11 @@ start() {
 stop() {
     STDOUT="Removing domain from Sendmail host:"
 
-    if [ -e $LOCK ]; then
+    if [ -e $LOCKFILE ]; then
         action $"$STDOUT" snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.1 SNMPv2-MIB::sysLocation.0 s $DOMAIN
 
         if [ $? -eq 0 ]; then
-            rm -f $LOCK
+            rm -f $LOCKFILE
         fi
     else
         echo -n $"$STDOUT"
