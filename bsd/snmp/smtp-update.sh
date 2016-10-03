@@ -35,7 +35,7 @@ COMMUNITY=private
 REMOTE_HOST=mail.domain.com
 DOMAIN=`hostname`
 SCRIPT=`basename $0`
-LOCKFILE=/var/lock/subsys/$SCRIPT
+LOCKFILE=/var/tmp/$SCRIPT
 
 if [ ! -x /usr/local/bin/snmptrap ]; then
     exit 1
