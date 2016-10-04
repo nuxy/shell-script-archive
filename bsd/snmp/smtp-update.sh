@@ -45,17 +45,14 @@ smtp_update_start() {
     STDOUT="Adding domain to Sendmail host:"
 
     if [ ! -e $LOCKFILE ]; then
-        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.0 SNMPv2-MIB::sysLocation.0 s $DOMAIN`
+        snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.0 SNMPv2-MIB::sysLocation.0 s $DOMAIN
 
-        if [ -z "$success" ]; then
+        if [ $? -eq 0 ]; then
             echo "$STDOUT success"
+            touch $LOCKFILE
         else
             echo "$STDOUT failed"
             exit 1
-        fi
-
-        if [ $? -eq 0 ]; then
-            touch $LOCKFILE
         fi
     fi
 }
@@ -64,17 +61,14 @@ smtp_update_stop() {
     STDOUT="Removing domain from Sendmail host:"
 
     if [ -e $LOCKFILE ]; then
-        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.1 SNMPv2-MIB::sysLocation.0 s $DOMAIN`
+        snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.2.1 SNMPv2-MIB::sysLocation.0 s $DOMAIN
 
-        if [ -z "$success" ]; then
+        if [ $? -eq 0 ]; then
             echo "$STDOUT success"
+            touch $LOCKFILE
         else
             echo "$STDOUT failed"
             exit 1
-        fi
-
-        if [ $? -eq 0 ]; then
-            rm -f $LOCKFILE
         fi
     fi
 }

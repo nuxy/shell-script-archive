@@ -46,17 +46,14 @@ dns_update_start() {
     STDOUT="Adding record to remote DNS host:"
 
     if [ ! -e $LOCKFILE ]; then
-        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS`
+        snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS
 
-        if [ "$success" != "" ]; then
+        if [ $? -eq 0 ]; then
             echo "$STDOUT success"
+            touch $LOCKFILE
         else
             echo "$STDOUT failed"
             exit 1
-        fi
-
-        if [ $? -eq 0 ]; then
-            touch $LOCKFILE
         fi
     fi
 }
@@ -65,17 +62,14 @@ dns_update_stop() {
     STDOUT="Removing record from the remote DNS host:"
 
     if [ -e $LOCKFILE ]; then
-        success=`snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS`
+        snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS
 
-        if [ "$success" != "" ]; then
+        if [ $? -eq 0 ]; then
             echo "$STDOUT success"
+            touch $LOCKFILE
         else
             echo "$STDOUT failed"
             exit 1
-        fi
-
-        if [ $? -eq 0 ]; then
-            rm -f $LOCKFILE
         fi
     else
         echo "$STDOUT failed"
