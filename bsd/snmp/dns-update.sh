@@ -66,7 +66,7 @@ dns_update_stop() {
 
         if [ $? -eq 0 ]; then
             echo "$STDOUT success"
-            touch $LOCKFILE
+            rm -f $LOCKFILE
         else
             echo "$STDOUT failed"
             exit 1
