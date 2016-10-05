@@ -39,7 +39,7 @@ fwd_addr=`echo $ip | sed -r 's/^UDP: \[([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9
 set ${fwd_addr//./ }
 rev_addr="$4.$3.$2";
 
-# Remove duplicates
+# Remove records
 if grep "^$alias" $FWD_ZONE; then
     sed -i '' "/^$alias.*/d" $FWD_ZONE
 fi
