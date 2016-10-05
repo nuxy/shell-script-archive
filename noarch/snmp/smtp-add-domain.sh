@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 #  smtp-add-domain.sh
 #  Add a new domain to the Sendmail access/domain database using SNMP
@@ -19,7 +19,7 @@
 #   - This script must be executed via an SNMP trap
 #
 #  Command:
-#   snmptrap -v 2c -c public localhost "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s "alias"
+#   snmptrap -v 2c -c public localhost "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s "domain"
 #
 
 MAIL_HOST=mail.domain.com
@@ -30,24 +30,31 @@ read ip
 
 while read oid val; do
     if [ "$val" != "" ]; then
-        record="$val"
+        domain="$val"
     fi
 done
 
-exists=`cat $MAIL_DIR/domaintable | grep -P "^$record\t"`
+ip_addr=`echo $ip | sed -r 's/^UDP: \[([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})\].*/\1/g'`
 
-if [ "$exists" = "" ]; then
-    ip_addr=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
-
-    echo -e "$ip_addr\t\t\tRELAY"     >> $MAIL_DIR/access
-    echo -e "$record\t\t\t$MAIL_HOST" >> $MAIL_DIR/domaintable
-
-    makemap hash $MAIL_DIR/access      < $MAIL_DIR/access
-    makemap hash $MAIL_DIR/domaintable < $MAIL_DIR/domaintable
-
-    service sendmail restart
-
-    logger "Added new domain '$record' to the Sendmail database"
+# Remove duplicates
+if grep "^$ip_addr" $MAIL_DIR/access; then
+    sed -i '' "/^$ap_addr.*/d" $MAIL_DIR/access
 fi
+
+if grep "^$domain" $MAIL_DIR/domaintable; then
+    sed -i '' "/^$domain.*/d" $MAIL_DIR/domaintable
+fi
+
+# Add new mail routes
+echo -e "$ip_addr\t\t\tRELAY"     >> $MAIL_DIR/access
+echo -e "$domain\t\t\t$MAIL_HOST" >> $MAIL_DIR/domaintable
+
+# Update Sendmail database and restart
+makemap hash $MAIL_DIR/access.db      < $MAIL_DIR/access
+makemap hash $MAIL_DIR/domaintable.db < $MAIL_DIR/domaintable
+
+service sendmail restart
+
+logger "Added new domain '$domain' to the Sendmail database"
 
 exit 0
