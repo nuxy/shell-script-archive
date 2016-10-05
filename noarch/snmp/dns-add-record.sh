@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #  dns-add-record.sh
 #  Add a new 'A' record to the DNS zone file in Bind using SNMP
@@ -31,24 +31,31 @@ read ip
 
 while read oid val; do
     if [ "$val" != "" ]; then
-        record=$val
+        alias=$val
     fi
 done
 
-exists=`cat $FWD_ZONE | grep -P "^$record\t"`
+fwd_addr=`echo $ip | sed -r 's/^UDP: \[([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})\].*/\1/g'`
+set ${fwd_addr//./ }
+rev_addr="$4.$3.$2";
 
-if [ "$exists" = "" ]; then
-    FWD_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
-    set ${FWD_ADDR//./ }
-    REV_ADDR="$4.$3.$2";
-
-    echo -e "$record\t\tA\t$FWD_ADDR"               >> $FWD_ZONE
-    echo -e "$REV_ADDR\t\tPTR\t$record.$ZONE_NAME." >> $REV_ZONE
-
-    rndc reload $ZONE_NAME
-    rndc reload 10.in-addr.arpa
-
-    logger "Added new record '$record' to DNS zone file"
+# Remove duplicates
+if grep "^$alias" $FWD_ZONE; then
+    sed -i '' "/^$alias.*/d" $FWD_ZONE
 fi
+
+if grep "^$rev_addr" $REV_ZONE; then
+    sed -i '' "/^$rev_addr.*/d" $REV_ZONE
+fi
+
+# Create new records
+echo -e "$alias\t\tA\t$fwd_addr"               >> $FWD_ZONE
+echo -e "$rev_addr\t\tPTR\t$alias.$ZONE_NAME." >> $REV_ZONE
+
+# Reload zone files
+rndc reload $ZONE_NAME
+rndc reload 10.in-addr.arpa
+
+logger "Added new record '$alias' at '$fwd_addr' to DNS zone file"
 
 exit 0

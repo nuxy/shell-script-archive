@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #  dns-del-record.sh
 #  Remove an 'A' record from the DNS zone file in Bind using SNMP
@@ -31,27 +31,27 @@ read ip
 
 while read oid val; do
     if [ "$val" != "" ]; then
-        record=$val
+        alias=$val
     fi
 done
 
-exists=`cat $FWD_ZONE | grep -P "^$record\t"`
+fwd_addr=`echo $ip | sed -r 's/^UDP: \[([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})\].*/\1/g'`
+set ${fwd_addr//./ }
+rev_addr="$4.$3.$2";
 
-if [ "$exists" != "" ]; then
-    FWD_ADDR=`echo $ip | sed -s 's/UDP: \[\(.*\)\]\:.*/\1/g'`
-    set ${FWD_ADDR//./ }
-    REV_ADDR="$4.$3.$2";
-
-    sed "/^$record\t/d"   $FWD_ZONE > $FWD_ZONE\.bak
-    sed "/^$REV_ADDR\t/d" $REV_ZONE > $REV_ZONE\.bak
-
-    mv $FWD_ZONE\.bak $FWD_ZONE
-    mv $REV_ZONE\.bak $REV_ZONE
-
-    rndc reload $ZONE_NAME
-    rndc reload 10.in-addr.arpa
-
-    logger "Removed record '$record' from the DNS zone file"
+# Remove duplicates
+if grep "^$alias" $FWD_ZONE; then
+    sed -i '' "/^$alias.*/d" $FWD_ZONE
 fi
+
+if grep "^$rev_addr" $REV_ZONE; then
+    sed -i '' "/^$rev_addr.*/d" $REV_ZONE
+fi
+
+# Reload zone files
+rndc reload $ZONE_NAME
+rndc reload 10.in-addr.arpa
+
+logger "Removed record '$alias' at '$fwd_addr' from DNS zone file"
 
 exit 0
