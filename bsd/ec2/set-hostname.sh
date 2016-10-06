@@ -22,13 +22,14 @@
 name="set_hostname"
 start_cmd="${name}_start"
 
+CURL_DIR=/usr/local/bin
 OUTFILE=/root/.hostname
 
 set_hostname_start() {
     if [ -f $OUTFILE ]; then
         host_name=`cat $OUTFILE`
     else
-        host_name=`curl --silent http://169.254.169.254/latest/meta-data/hostname`
+        host_name=`$CURL_DIR/curl --silent http://169.254.169.254/latest/meta-data/hostname`
 
         echo $host_name > $OUTFILE
     fi

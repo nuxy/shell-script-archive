@@ -27,6 +27,7 @@
 name="mount_nfs"
 start_cmd="${name}_start"
 
+CURL_DIR=/usr/local/bin
 MOUNT_POINT=/efs
 NFS_ID=fs-abc123
 
@@ -34,7 +35,7 @@ mount_nfs_start() {
     if [ ! -d $MOUNT_POINT ]; then
         mkdir $MOUNT_POINT
 
-        avail_zone=`curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone`
+        avail_zone=`$CURL_DIR/curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone`
         aws_region=`echo $avail_zone | sed -e 's:\([0-9][0-9]*\)[a-z]*\$:\\1:'`
 
         echo "$avail_zone.$NFS_ID.efs.$aws_region.amazonaws.com:/ $MOUNT_POINT nfs defaults,vers=4.1 0 0" >> /etc/fstab
