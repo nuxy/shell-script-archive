@@ -25,6 +25,9 @@
 . /etc/rc.subr
 
 name="mount_nfs"
+rcvar="${name}_enable"
+# mount_nfs is set by rc.conf
+
 start_cmd="${name}_start"
 
 CURL_DIR=/usr/local/bin
@@ -46,4 +49,5 @@ mount_nfs_start() {
     fi
 }
 
+load_rc_config ${name}
 run_rc_command "$1"

@@ -23,6 +23,9 @@
 . /etc/rc.subr
 
 name="post_install"
+rcvar="${name}_enable"
+# post_install is set by rc.conf
+
 start_cmd="${name}_start"
 
 CURL_DIR=/usr/local/bin
@@ -47,4 +50,5 @@ post_install_start() {
     fi
 }
 
+load_rc_config ${name}
 run_rc_command "$1"

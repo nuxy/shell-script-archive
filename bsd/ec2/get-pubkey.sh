@@ -24,6 +24,9 @@
 . /etc/rc.subr
 
 name="get_pubkey"
+rcvar="${name}_enable"
+# get_pubkey is set by rc.conf
+
 start_cmd="${name}_start"
 
 CURL_DIR=/usr/local/bin
@@ -52,4 +55,5 @@ get_pubkey_start() {
     fi
 }
 
+load_rc_config ${name}
 run_rc_command "$1"

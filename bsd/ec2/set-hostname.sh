@@ -20,6 +20,9 @@
 . /etc/rc.subr
 
 name="set_hostname"
+rcvar="${name}_enable"
+# set_hostname is set by rc.conf
+
 start_cmd="${name}_start"
 
 CURL_DIR=/usr/local/bin
@@ -38,4 +41,5 @@ set_hostname_start() {
     echo -n "Hostname updated: success"
 }
 
+load_rc_config ${name}
 run_rc_command "$1"

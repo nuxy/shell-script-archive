@@ -23,6 +23,9 @@
 . /etc/rc.subr
 
 name="set_password"
+rcvar="${name}_enable"
+# set_password is set by rc.conf
+
 start_cmd="${name}_start"
 
 LOCKFILE=/root/.password
@@ -38,4 +41,5 @@ set_password_start() {
     fi
 }
 
+load_rc_config ${name}
 run_rc_command "$1"
