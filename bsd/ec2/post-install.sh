@@ -17,7 +17,7 @@
 #
 
 # PROVIDE: post_install
-# REQUIRE: DAEMON netif mountcritlocal
+# REQUIRE: LOGIN DAEMON NETWORKING mountcritlocal
 # KEYWORD: nojail
 
 . /etc/rc.subr
