@@ -19,7 +19,7 @@
 #
 
 # PROVIDE: mount_nfs
-# REQUIRE: DAEMON netif
+# REQUIRE: DAEMON netif mountcritlocal
 # KEYWORD: nojail
 
 . /etc/rc.subr
