@@ -18,7 +18,7 @@
 #   - This script can be installed in /etc/init.d or run from the command-line
 #
 
-# PROVIDE: dns_update
+# PROVIDE: smtp_update
 # REQUIRE: DAEMON netif
 # KEYWORD: nojail
 
