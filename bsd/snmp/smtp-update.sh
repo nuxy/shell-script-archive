@@ -73,5 +73,5 @@ smtp_update_stop() {
     fi
 }
 
-load_rc_config $name
+load_rc_config ${name}
 run_rc_command "$1"
