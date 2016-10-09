@@ -29,11 +29,11 @@ rcvar="${name}_enable"
 
 start_cmd="${name}_start"
 
-CURL_DIR=/usr/local/bin
+CURL_BIN=/usr/local/bin/curl
 HOME_DIR=/root
 
 get_pubkey_start() {
-    public_key=`$CURL_DIR/curl --silent http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
+    public_key=`$CURL_BIN -s http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
 
     if [ -n "$public_key" ]; then
         sshdir=$HOME_DIR/.ssh

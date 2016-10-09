@@ -28,12 +28,12 @@ rcvar="${name}_enable"
 
 start_cmd="${name}_start"
 
-CURL_DIR=/usr/local/bin
+CURL_BIN=/usr/local/bin/curl
 OUTFILE=/root/.install
 
 post_install_start() {
     if [ ! -f $OUTFILE ]; then
-        user_data=`$CURL_DIR/curl -s http://169.254.169.254/latest/user-data`
+        user_data=`$CURL_BIN -s http://169.254.169.254/latest/user-data`
 
         if [ ! "$(echo $user_data | grep 404)" ]; then
             echo "$user_data" > $OUTFILE
