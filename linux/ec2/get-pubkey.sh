@@ -21,7 +21,7 @@
 
 HOME_DIR=/root
 
-public_key=`curl --silent http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
+public_key=`curl -s http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key`
 
 if [ -n "$public_key" ]; then
     sshdir=$HOME_DIR/.ssh
