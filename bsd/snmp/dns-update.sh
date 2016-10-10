@@ -31,6 +31,7 @@ rcvar=${name}_enable
 start_cmd="${name}_start"
 stop_cmd="${name}_stop"
 
+SNMPTRAP_BIN=/usr/local/bin/snmptrap
 COMMUNITY=private
 HOSTNAME=`hostname`
 REMOTE_HOST=ns.domain.com
@@ -38,7 +39,7 @@ ALIAS=`echo $HOSTNAME | cut -d'.' -f1`
 SCRIPT=`basename $0`
 LOCKFILE=/var/tmp/$SCRIPT
 
-if [ ! -x /usr/local/bin/snmptrap ]; then
+if [ ! -x $SNMPTRAP_BIN ]; then
     exit 1
 fi
 
@@ -46,7 +47,7 @@ dns_update_start() {
     STDOUT="Adding record to remote DNS host:"
 
     if [ ! -e $LOCKFILE ]; then
-        snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS
+        $SNMPTRAP_BIN -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.0 SNMPv2-MIB::sysLocation.0 s $ALIAS
 
         if [ $? -eq 0 ]; then
             echo "$STDOUT success"
@@ -62,7 +63,7 @@ dns_update_stop() {
     STDOUT="Removing record from the remote DNS host:"
 
     if [ -e $LOCKFILE ]; then
-        snmptrap -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS
+        $SNMPTRAP_BIN -v 2c -c $COMMUNITY $REMOTE_HOST "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s $ALIAS
 
         if [ $? -eq 0 ]; then
             echo "$STDOUT success"
