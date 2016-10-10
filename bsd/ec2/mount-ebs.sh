@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 #  mount-ebs.sh
 #  Set-up the EBS (Elastic block store) to mount on boot.
@@ -7,18 +7,15 @@
 #  Licensed under the MIT license:
 #  http://www.opensource.org/licenses/mit-license.php
 #
-#  Dependencies:
-#    curl
-#
 #  Notes:
 #   - This script has been tested to work with FreeBSD & OpenBSD
 #   - This script must be run as root
 #   - This script can be installed in /etc/rc.d or run from the command-line
-#   - Must support EFS attachments by file-system-id
 #
 
 # PROVIDE: mount_ebs
-# REQUIRE: LOGIN DAEMON NETWORKING mountcritlocal
+# REQUIRE: DAEMON netif
+# BEFORE:  LOGIN
 # KEYWORD: nojail
 
 . /etc/rc.subr
@@ -29,40 +26,30 @@ rcvar="${name}_enable"
 
 start_cmd="${name}_start"
 
-CURL_BIN=/usr/local/bin/curl
-META_URL='http://169.254.169.254/latest/meta-data/block-device-mapping'
 MOUNT_POINT=/mnt/ebs
+DEVICE_NAME=/dev/xbd
 
 mount_ebs_start() {
-    declare -A block_map
+    for device in $(ls $DEVICE_NAME*); do
+        num=`echo $device | sed -e 's/^\/dev\/[a-z]*\([0-9]*\)$/\1/g'`
+        dir="$MOUNT_POINT${num}"
 
-    i=0
-    for letter in {a..z}; do
-        block_map[sd${letter}]="xbd${i}"
-        ((i++))
-    done
+        if [ ! -d $dir ]; then
+            mkdir $dir
 
-    j=0
-    for device in `$CURL_BIN -s $META_URL/`; do
-        if [[ ! $device =~ ^ebs ]]; then
-            continue
+            fsck -n -t ufs $device
+
+            if ! mount -t ufs $device $dir; then
+                warn "Failed to mount ${device}. Skipping.."
+
+                rm -rf $dir
+                continue
+            fi
+
+            echo -e "$device\t$dir\tufs\trw,failok\t0\t2" >> /etc/fstab
+
+            info "Mounting EBS ($device) at $dir: success"
         fi
-
-        block=${block_map[`$CURL_BIN -s $META_URL/$device`]}
-
-        if [ $j -gt 1 ]; then
-            MOUNT_POINT="$MOUNT_POINT${j}"
-        fi
-
-        if [ ! -d $MOUNT_POINT ]; then
-            mkdir $MOUNT_POINT
-            echo -e "/dev/$block\t$MOUNT_POINT\tufs\trw,failok\t0\t2" >> /etc/fstab
-            mount $MOUNT_POINT
-
-            echo "Mounting EBS volumes: success"
-        fi
-
-        ((j++))
     done
 }
 
