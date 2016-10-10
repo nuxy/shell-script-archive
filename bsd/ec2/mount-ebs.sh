@@ -46,6 +46,10 @@ mount_ebs_start() {
                 continue
             fi
 
+            if [ $num -eq 1 ]; then
+                ln -s $dir $MOUNT_POINT
+            fi
+
             echo -e "$device\t$dir\tufs\trw,failok\t0\t2" >> /etc/fstab
 
             info "Mounting EBS ($device) at $dir: success"
