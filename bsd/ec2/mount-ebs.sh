@@ -37,7 +37,7 @@ mount_ebs_start() {
         if [ ! -d $dir ]; then
             mkdir $dir
 
-            fsck -n -t ufs $device
+            fsck -y -t ufs $device
 
             if ! mount -t ufs $device $dir; then
                 warn "Failed to mount ${device}. Skipping.."
