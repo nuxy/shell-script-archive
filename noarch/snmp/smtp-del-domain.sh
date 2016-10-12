@@ -22,7 +22,6 @@
 #   snmptrap -v 2c -c public localhost "" SNMPv2-MIB::snmpTrap.1.1 SNMPv2-MIB::sysLocation.0 s "domain"
 #
 
-MAIL_HOST=mail.domain.com
 MAIL_DIR=/etc/mail
 
 read host
